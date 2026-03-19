@@ -7,7 +7,9 @@ export function Navbar() {
         <span className="font-logo text-white" style={{ fontSize: '3em' }}>
           Neymar
         </span>
-        <LanguageFlag />
+        <div className="mr-20">
+          <LanguageFlag />
+        </div>
       </div>
     </nav>
   );
