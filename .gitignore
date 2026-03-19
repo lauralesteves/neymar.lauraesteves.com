@@ -3,6 +3,7 @@ node_modules/
 
 # Build
 dist/
+.vite/
 dist-pt/
 dist-en/
 dist-es/
