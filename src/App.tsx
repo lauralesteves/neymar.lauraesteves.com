@@ -1,17 +1,18 @@
 import { useCallback, useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { AudioButton } from './components/AudioButton/AudioButton';
 import { FallingNeymar } from './components/FallingNeymar/FallingNeymar';
 import { Footer } from './components/Footer/Footer';
 import { GithubCorner } from './components/GithubCorner/GithubCorner';
 import { Navbar } from './components/Navbar/Navbar';
-import { LocaleContext, getLocaleFromPath } from './i18n/LocaleContext';
+import { LocaleContext, getLocaleFromPath, useLocale } from './i18n/LocaleContext';
 import { translations } from './i18n/translations';
 import { useMetaTags } from './i18n/useMetaTags';
 
 const STORAGE_KEY = 'audio-muted:neymar';
 
 function HomePage() {
+  const { t } = useLocale();
   const [isMuted, setIsMuted] = useState(
     () => localStorage.getItem(STORAGE_KEY) !== 'false',
   );
@@ -43,14 +44,6 @@ function HomePage() {
   }, []);
 
   return (
-    <FallingNeymarPage isMuted={isMuted} toggleMute={toggleMute} />
-  );
-}
-
-function FallingNeymarPage({ isMuted, toggleMute }: { isMuted: boolean; toggleMute: () => void }) {
-  const { t } = useLocale();
-
-  return (
     <div
       className="relative w-full h-screen bg-cover bg-center bg-no-repeat"
       style={{ backgroundImage: "url('/images/campo.webp')", backgroundColor: '#7bbcf3' }}
@@ -80,21 +73,19 @@ function LocaleLayout() {
 
   return (
     <LocaleContext.Provider value={{ locale, t, basePath }}>
-      <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/en" element={<HomePage />} />
-        <Route path="/es" element={<HomePage />} />
-      </Routes>
+      <Outlet />
     </LocaleContext.Provider>
   );
 }
 
-import { useLocale } from './i18n/LocaleContext';
-
 export default function App() {
   return (
     <Routes>
-      <Route path="/*" element={<LocaleLayout />} />
+      <Route element={<LocaleLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/en" element={<HomePage />} />
+        <Route path="/es" element={<HomePage />} />
+      </Route>
     </Routes>
   );
 }
