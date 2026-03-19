@@ -27,3 +27,36 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.neymar-fall-1 {
+  scale: 0.8;
+}
+
+.neymar-fall-2 {
+  scale: 0.8;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0) rotate(0deg); }
+  20% { transform: translateX(-2px) rotate(-3deg); }
+  40% { transform: translateX(2px) rotate(3deg); }
+  60% { transform: translateX(-1px) rotate(-2deg); }
+  80% { transform: translateX(1px) rotate(2deg); }
+}
+
+.animate-shake {
+  animation: shake 0.5s ease-in-out infinite;
+}
+
+.thrown-glow {
+  filter: drop-shadow(0 0 12px black) drop-shadow(0 0 24px black);
+}
+
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.thrown-pulse {
+  animation: pulse-opacity 0.6s ease-in-out infinite;
+}

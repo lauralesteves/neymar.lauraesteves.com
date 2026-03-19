@@ -9,7 +9,7 @@ const STORAGE_KEY = 'audio-muted:neymar';
 
 export default function App() {
   const [isMuted, setIsMuted] = useState(
-    () => localStorage.getItem(STORAGE_KEY) === 'true',
+    () => localStorage.getItem(STORAGE_KEY) !== 'false',
   );
 
   // Unlock audio on first user interaction
@@ -47,7 +47,13 @@ export default function App() {
       <GithubCorner />
       <Navbar />
       <FallingNeymar isMuted={isMuted} />
-      <AudioButton isMuted={isMuted} onToggle={toggleMute} />
+      <div className="fixed left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3" style={{ bottom: 'calc(var(--spacing) * 16 + 14px)' }}>
+        <AudioButton isMuted={isMuted} onToggle={toggleMute} />
+        <p className="bg-black text-white text-xs font-body font-semibold text-center whitespace-nowrap rounded-full px-6 py-2 shadow-lg">
+          <span className="hidden md:inline">Clique e arraste o Neymar caído para jogá-lo de novo</span>
+          <span className="md:hidden">Toque e arraste o Neymar caído para jogá-lo de novo</span>
+        </p>
+      </div>
       <Footer />
     </div>
   );
