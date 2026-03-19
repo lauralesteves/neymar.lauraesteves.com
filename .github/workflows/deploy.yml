@@ -1,0 +1,61 @@
+name: Build & Deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Build
+        run: bun run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Deploy assets to S3 (immutable cache)
+        run: |
+          aws s3 sync dist/ s3://neymar.lauraesteves.com \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable" \
+            --exclude "*.html" \
+            --exclude "robots.txt" \
+            --exclude "site.webmanifest" \
+            --exclude "browserconfig.xml" \
+            --exclude "ai.txt" \
+            --exclude "humans.txt" \
+            --exclude ".well-known/*"
+
+      - name: Deploy HTML and metadata to S3 (short cache)
+        run: |
+          aws s3 sync dist/ s3://neymar.lauraesteves.com \
+            --delete \
+            --cache-control "public, max-age=3600" \
+            --exclude "*" \
+            --include "*.html" \
+            --include "robots.txt" \
+            --include "site.webmanifest" \
+            --include "browserconfig.xml" \
+            --include "ai.txt" \
+            --include "humans.txt" \
+            --include ".well-known/*"
+
+      - name: Invalidate CloudFront cache
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
