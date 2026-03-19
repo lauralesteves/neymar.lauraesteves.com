@@ -1,18 +1,22 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Outlet, Route, Routes, useLocation } from 'react-router-dom';
 import { AudioButton } from './components/AudioButton/AudioButton';
 import { FallingNeymar } from './components/FallingNeymar/FallingNeymar';
 import { Footer } from './components/Footer/Footer';
 import { GithubCorner } from './components/GithubCorner/GithubCorner';
 import { Navbar } from './components/Navbar/Navbar';
+import { LocaleContext, getLocaleFromPath, useLocale } from './i18n/LocaleContext';
+import { translations } from './i18n/translations';
+import { useMetaTags } from './i18n/useMetaTags';
 
 const STORAGE_KEY = 'audio-muted:neymar';
 
-export default function App() {
+function HomePage() {
+  const { t } = useLocale();
   const [isMuted, setIsMuted] = useState(
     () => localStorage.getItem(STORAGE_KEY) !== 'false',
   );
 
-  // Unlock audio on first user interaction
   useEffect(() => {
     let unlocked = false;
     const unlock = () => {
@@ -50,11 +54,38 @@ export default function App() {
       <div className="fixed left-1/2 -translate-x-1/2 z-50 flex flex-col items-center gap-3" style={{ bottom: 'calc(var(--spacing) * 16 + 14px)' }}>
         <AudioButton isMuted={isMuted} onToggle={toggleMute} />
         <p className="bg-black text-white text-xs font-body font-semibold text-center whitespace-nowrap rounded-full px-6 py-2 shadow-lg">
-          <span className="hidden md:inline">Clique e arraste o Neymar caído para jogá-lo de novo</span>
-          <span className="md:hidden">Toque e arraste o Neymar caído para jogá-lo de novo</span>
+          <span className="hidden md:inline">{t.dragInstruction.desktop}</span>
+          <span className="md:hidden">{t.dragInstruction.mobile}</span>
         </p>
       </div>
       <Footer />
     </div>
+  );
+}
+
+function LocaleLayout() {
+  const location = useLocation();
+  const locale = getLocaleFromPath(location.pathname);
+  const t = translations[locale];
+  const basePath = locale === 'pt' ? '' : `/${locale}`;
+
+  useMetaTags(t);
+
+  return (
+    <LocaleContext.Provider value={{ locale, t, basePath }}>
+      <Outlet />
+    </LocaleContext.Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route element={<LocaleLayout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/en" element={<HomePage />} />
+        <Route path="/es" element={<HomePage />} />
+      </Route>
+    </Routes>
   );
 }
