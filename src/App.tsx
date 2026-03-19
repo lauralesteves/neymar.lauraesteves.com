@@ -9,7 +9,7 @@ const STORAGE_KEY = 'audio-muted:neymar';
 
 export default function App() {
   const [isMuted, setIsMuted] = useState(
-    () => localStorage.getItem(STORAGE_KEY) === 'true',
+    () => localStorage.getItem(STORAGE_KEY) !== 'false',
   );
 
   // Unlock audio on first user interaction
