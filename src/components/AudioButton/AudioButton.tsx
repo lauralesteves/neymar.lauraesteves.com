@@ -1,3 +1,5 @@
+import { useState } from 'react';
+
 function SoundOnIcon() {
   return (
     <svg
@@ -34,22 +36,24 @@ interface AudioButtonProps {
 }
 
 export function AudioButton({ isMuted, onToggle }: AudioButtonProps) {
+  const [hasInteracted, setHasInteracted] = useState(false);
+
+  const handleClick = () => {
+    setHasInteracted(true);
+    onToggle();
+  };
+
   return (
-    <div
-      className="fixed right-6 z-50"
-      style={{ bottom: 'calc(var(--spacing) * 16 + 20px)' }}
+    <button
+      type="button"
+      onClick={handleClick}
+      className={`bg-black text-white rounded-full px-6 py-3 flex items-center gap-2 shadow-lg hover:bg-gray-900 transition-colors cursor-pointer font-body font-semibold ${isMuted && !hasInteracted ? 'animate-shake' : ''}`}
+      aria-label={isMuted ? 'Ativar som' : 'Desativar som'}
     >
-      <button
-        type="button"
-        onClick={onToggle}
-        className="bg-white text-black rounded-full px-6 py-3 flex items-center gap-2 shadow-lg hover:bg-gray-100 transition-colors cursor-pointer font-body font-semibold"
-        aria-label={isMuted ? 'Ativar som' : 'Desativar som'}
-      >
-        {isMuted ? <SoundOffIcon /> : <SoundOnIcon />}
-        <span className="text-sm uppercase">
-          {isMuted ? 'Som desligado' : 'Som ligado'}
-        </span>
-      </button>
-    </div>
+      {isMuted ? <SoundOffIcon /> : <SoundOnIcon />}
+      <span className="text-sm uppercase">
+        {isMuted ? 'Som desligado' : 'Som ligado'}
+      </span>
+    </button>
   );
 }
