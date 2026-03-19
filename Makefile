@@ -7,7 +7,7 @@ export AWS_PAGER :=
 
 ## Servidor de desenvolvimento
 server:
-	bun run dev
+	yarn dev
 
 ## Build do site Vite
 build:
