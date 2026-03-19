@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-const TOTAL_FALL_SPRITES = 7;
+const TOTAL_FALL_SPRITES = 5;
 const GRAVITY = 0.09;
 const BOUNCE_FACTOR = 0.3;
 const MIN_BOUNCE_VEL = 0.5;
@@ -133,7 +133,7 @@ export function FallingNeymar({ isMuted }: FallingNeymarProps) {
               : `/images/neymar_fall_${s.fallIndex}.webp`
           }
           alt=""
-          className="absolute"
+          className={`absolute ${s.isGrounded ? 'neymar-ground' : `neymar-fall neymar-fall-${s.fallIndex}`}`}
           style={{
             left: s.x,
             top: s.y,
