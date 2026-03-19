@@ -47,3 +47,16 @@ body {
 .animate-shake {
   animation: shake 0.5s ease-in-out infinite;
 }
+
+.thrown-glow {
+  filter: drop-shadow(0 0 12px black) drop-shadow(0 0 24px black);
+}
+
+@keyframes pulse-opacity {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+.thrown-pulse {
+  animation: pulse-opacity 0.6s ease-in-out infinite;
+}

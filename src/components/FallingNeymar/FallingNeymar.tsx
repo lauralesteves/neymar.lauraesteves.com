@@ -37,6 +37,8 @@ interface FallingNeymarProps {
   isMuted: boolean;
 }
 
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+
 export function FallingNeymar({ isMuted }: FallingNeymarProps) {
   const [sprites, setSprites] = useState<Sprite[]>([]);
   const spritesRef = useRef<Sprite[]>([]);
@@ -242,7 +244,7 @@ export function FallingNeymar({ isMuted }: FallingNeymarProps) {
               : `neymar-fall neymar-fall-${s.fallIndex}`
           } ${s.isDone ? 'cursor-grab pointer-events-auto' : ''} ${
             s.isDragging ? 'cursor-grabbing pointer-events-auto' : ''
-          }`}
+          } ${s.wasThrown ? (isIOS ? 'thrown-pulse' : 'thrown-glow') : ''}`}
           style={{
             left: s.x,
             top: s.y,
@@ -250,7 +252,6 @@ export function FallingNeymar({ isMuted }: FallingNeymarProps) {
             width: 'auto',
             transform: s.flipped ? 'scaleX(-1)' : undefined,
             touchAction: 'none',
-            filter: s.wasThrown ? 'drop-shadow(0 0 12px red) drop-shadow(0 0 24px red)' : undefined,
           }}
           onPointerDown={(e) => handlePointerDown(s.id, e)}
           onPointerMove={handlePointerMove}
