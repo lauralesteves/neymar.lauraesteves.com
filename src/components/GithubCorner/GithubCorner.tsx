@@ -1,15 +1,18 @@
+import { useLocale } from '../../i18n/LocaleContext';
 import './GithubCorner.css';
 
 export function GithubCorner() {
+  const { t } = useLocale();
+
   return (
     <a
       href="https://github.com/lauralesteves/neymar.lauraesteves.com"
       className="github-corner"
-      aria-label="View source on GitHub"
+      aria-label={t.github.ariaLabel}
       target="_blank"
       rel="noreferrer"
     >
-      <span className="sr-only">View source on GitHub</span>
+      <span className="sr-only">{t.github.ariaLabel}</span>
       <svg width="80" height="80" viewBox="0 0 250 250" aria-hidden="true">
         <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" />
         <path

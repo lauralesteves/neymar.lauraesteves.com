@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useLocale } from '../../i18n/LocaleContext';
 
 function SoundOnIcon() {
   return (
@@ -36,6 +37,7 @@ interface AudioButtonProps {
 }
 
 export function AudioButton({ isMuted, onToggle }: AudioButtonProps) {
+  const { t } = useLocale();
   const [hasInteracted, setHasInteracted] = useState(false);
 
   const handleClick = () => {
@@ -48,11 +50,11 @@ export function AudioButton({ isMuted, onToggle }: AudioButtonProps) {
       type="button"
       onClick={handleClick}
       className={`bg-black text-white rounded-full px-6 py-3 flex items-center gap-2 shadow-lg hover:bg-gray-900 transition-colors cursor-pointer font-body font-semibold ${isMuted && !hasInteracted ? 'animate-shake' : ''}`}
-      aria-label={isMuted ? 'Ativar som' : 'Desativar som'}
+      aria-label={isMuted ? t.audio.activate : t.audio.deactivate}
     >
       {isMuted ? <SoundOffIcon /> : <SoundOnIcon />}
       <span className="text-sm uppercase">
-        {isMuted ? 'Som desligado' : 'Som ligado'}
+        {isMuted ? t.audio.off : t.audio.on}
       </span>
     </button>
   );
