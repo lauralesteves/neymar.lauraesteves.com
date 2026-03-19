@@ -34,10 +34,19 @@ export function FallingNeymar({ isMuted }: FallingNeymarProps) {
   const nextIdRef = useRef(0);
   const waitingToSpawnRef = useRef(false);
   const spawnTimeoutRef = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const preloadedAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
     isMutedRef.current = isMuted;
   }, [isMuted]);
+
+  useEffect(() => {
+    // Preload audio so it plays instantly on spawn
+    const audio = new Audio('/audio/ta_doendo_demais.mp3');
+    audio.preload = 'auto';
+    audio.load();
+    preloadedAudioRef.current = audio;
+  }, []);
 
   useEffect(() => {
     // Reset on StrictMode remount
@@ -64,10 +73,10 @@ export function FallingNeymar({ isMuted }: FallingNeymarProps) {
       spritesRef.current.push(sprite);
       waitingToSpawnRef.current = false;
 
-      if (!isMutedRef.current) {
-        const audio = new Audio('/audio/ta_doendo_demais.mp3');
-        audio.volume = 0.8;
-        audio.play().catch(() => {});
+      if (!isMutedRef.current && preloadedAudioRef.current) {
+        const clone = preloadedAudioRef.current.cloneNode() as HTMLAudioElement;
+        clone.volume = 0.8;
+        clone.play().catch(() => {});
       }
     };
 
