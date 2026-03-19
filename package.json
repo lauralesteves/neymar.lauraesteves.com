@@ -5,13 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "tsc -b && vite build && bun scripts/generate-html.ts",
     "check": "biome check . --write",
     "preview": "vite preview"
   },
   "dependencies": {
     "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react-dom": "^19.1.0",
+    "react-router-dom": "^7.13.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.4.8",
@@ -23,5 +24,7 @@
     "typescript": "^5.7.0",
     "vite": "^8.0.1"
   },
-  "trustedDependencies": ["@biomejs/biome"]
+  "trustedDependencies": [
+    "@biomejs/biome"
+  ]
 }
