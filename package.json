@@ -22,7 +22,7 @@
     "@vitejs/plugin-react-swc": "^4.2.0",
     "tailwindcss": "^4.1.0",
     "typescript": "^6.0.2",
-    "vite": "^8.0.1"
+    "vite": "^8.0.3"
   },
   "trustedDependencies": [
     "@biomejs/biome"
