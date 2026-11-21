@@ -1,0 +1,47 @@
+name: Dependabot lockfile
+
+# Dependabot updates package.json but does not regenerate bun.lock,
+# so `bun install --frozen-lockfile` fails. This regenerates the lockfile
+# on Dependabot PRs that change package.json and re-runs the Build.
+
+on:
+  pull_request:
+    paths:
+      - package.json
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  update-lockfile:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      # --ignore-scripts: never run dependency code with a write token
+      - name: Regenerate bun.lock
+        run: bun install --ignore-scripts
+
+      - name: Commit lockfile and re-run Build
+        env:
+          GH_TOKEN: ${{ github.token }}
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          if git diff --quiet -- bun.lock; then
+            echo "bun.lock already up to date"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add bun.lock
+          git commit -m "chore(deps): regenerate bun.lock"
+          git push
+          # Pushes made with GITHUB_TOKEN don't trigger workflows, so dispatch Build explicitly
+          gh workflow run build.yml --ref "$BRANCH"
